@@ -14,7 +14,7 @@ let oscillator;
  * @type {GainNode}
  */
 const gainNode = audioContext.createGain();
-gainNode.connect();
+gainNode.connect(audioContext.destination);
 gainNode.gain.value = 0.0; // Default volume level (50%)
 
 /**
@@ -28,21 +28,21 @@ let isPlaying = false;
  * If the oscillator is playing, it stops and disconnects.
  * If it is not playing, it creates a new oscillator, connects it, and starts it.
  */
-const toggleOscillator = function() {
-    if (isPlaying) {
-        oscillator.stop(); // Stop the oscillator
-        oscillator.disconnect(); // Disconnect it from the gain node
-        isPlaying = false;
-        document.getElementById("toggle").textContent = "Play"; // Update button text
-    } else {
-        oscillator = audioContext.createOscillator(); // Create a new oscillator
-        oscillator.type = document.getElementById("waveform").value; // Set waveform type
-        oscillator.frequency.value = 440; // Default frequency (A4)
-        oscillator.connect(gainNode); // Connect oscillator to gain
-        oscillator.start; // Start the oscillator
-        isPlaying = true;
-        document.getElementById("toggle").textContent = "Stop"; // Update button text
-    }
+const toggleOscillator = function () {
+  if (isPlaying) {
+    oscillator.stop; // Stop the oscillator
+    oscillator.disconnect(gainNode); // Disconnect it from the gain node
+    isPlaying = false;
+    document.getElementById("toggle").textContent = "Play"; // Update button text
+  } else {
+    oscillator = audioContext.createOscillator(); // Create a new oscillator
+    oscillator.type = document.getElementById("waveform").value; // Set waveform type
+    oscillator.frequency.value = 440; // Default frequency (A4)
+    oscillator.connect(gainNode); // Connect oscillator to gain
+    oscillator.start; // Start the oscillator
+    isPlaying = true;
+    document.getElementById("toggle").textContent = "Stop"; // Update button text
+  }
 };
 
 /**
@@ -55,23 +55,25 @@ const toggleOscillator = function() {
  *
  * @param {Event} event - The input event triggered by the gain slider.
  */
-const updateGain = function(event) {
-    let sliderValue = document.getElementById("gain").value; // Get the slider value (in dB)
-    sliderValue = parseFloat(sliderValue); // Convert string input to a number
-    gainNode.gain.linearRampToValueAtTime(dbtoa(sliderValue), audioContext.currentTime + 0.05);
-    // Convert dB to amplitude and smoothly update gain over 50ms
+const updateGain = function (event) {
+  let sliderValue = document.getElementById("gain").value; // Get the slider value (in dB)
+  sliderValue = parseFloat(sliderValue); // Convert string input to a number
+  gainNode.gain.linearRampToValueAtTime(
+    dbtoa(sliderValue),
+    audioContext.currentTime + 0.05
+  );
+  // Convert dB to amplitude and smoothly update gain over 50ms
 };
-
 
 /**
  * Updates the oscillator's waveform type when the dropdown menu is changed.
  * The waveform type only updates if the oscillator is currently playing.
  * @param {Event} event - The change event from the waveform dropdown.
  */
-const updateWaveform = function(event) {
-    if (isPlaying) {
-        oscillator.type = event.target.value; // Change oscillator waveform
-    }
+const updateWaveform = function (event) {
+  if (isPlaying) {
+    oscillator.type = event.target.value; // Change oscillator waveform
+  }
 };
 
 /**
@@ -83,8 +85,8 @@ const updateWaveform = function(event) {
  * @param {number} db - The decibel value to convert.
  * @returns {number} - The corresponding amplitude value in linear scale.
  */
-const dbtoa = function(db) {
-    return Math.pow(10, db / 20); // Convert dB to linear amplitude
+const dbtoa = function (db) {
+  return Math.pow(10, db / 20); // Convert dB to linear amplitude
 };
 
 // Attach event listeners to UI elements
