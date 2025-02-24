@@ -15,7 +15,7 @@ let oscillator;
  */
 const gainNode = audioContext.createGain();
 gainNode.connect(audioContext.destination);
-gainNode.gain.value = 0.0; // Default volume level (50%)
+gainNode.gain.value = 0; // Default volume level (50%)
 
 /**
  * Boolean flag to track whether the oscillator is currently playing.
